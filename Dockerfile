@@ -9,7 +9,7 @@ RUN add-apt-repository -y ppa:ansible/ansible && \
     python-setuptools python-pip && \
     pip install -U pip wheel && \
     pip install -U ansible==${ANSIBLE_VERSION} \
-    testinfra==${TESTINFRA_VERSION} && \
+    testinfra==${TESTINFRA_VERSION} ansible-lint && \
     apt-get remove -y --auto-remove python-setuptools python-pip && \
     rm -Rf /var/lib/apt/lists/* && \
     rm -Rf /usr/share/doc && rm -Rf /usr/share/man && \
