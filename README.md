@@ -11,8 +11,8 @@ This [repo](https://github.com/thomasjpfan/ansible-ubuntu-local-runner) provides
 ```bash
 docker run --rm --privileged \
   -v $PWD:/etc/ansible/roles/role_to_test \
-  -v /sys/fs/cgroup:/sys/fs/cgroup:ro -t \
-  -v $PWD/dep_roles:/root/.ansible/roles \
+  -v /sys/fs/cgroup:/sys/fs/cgroup:ro  \
+  -v $PWD/dep_roles:/root/.ansible/roles -t \
   thomasjpfan/ansible-ubuntu-local-runner all
 ```
 
@@ -33,7 +33,7 @@ For local development, one can start a shell:
 ```bash
 docker run --rm --privileged \
   -v $PWD:/etc/ansible/roles/role_to_test \
-  -v /sys/fs/cgroup:/sys/fs/cgroup:ro -t \
+  -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
   -v $PWD/dep_roles:/root/.ansible/roles -ti \
   thomasjpfan/ansible-ubuntu-local-runner /bin/sh
 ```
