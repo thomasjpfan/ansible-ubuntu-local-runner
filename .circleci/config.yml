@@ -14,11 +14,18 @@ jobs:
           command: |
             docker image build -t $DOCKER_HUB_REPO:$CIRCLE_BRANCH .
       - run:
-          name: Run test
+          name: Run container
           command: |
             docker create -v /etc/ansible/roles/role_to_test --name repo alpine:3.7 /bin/true
             docker cp . repo:/etc/ansible/roles/role_to_test
-            docker run --rm --volumes-from repo $DOCKER_HUB_REPO:$CIRCLE_BRANCH all
+            docker run --rm --volumes-from repo -d --name ctest $DOCKER_HUB_REPO:$CIRCLE_BRANCH
+      - run:
+          name: Run test
+          command: docker exec -ti ctest cli all
+      - run:
+          name: Clean up
+          command: docker stop ctest
+          when: always
       - deploy:
           name: Push to Docker Hub
           command: |

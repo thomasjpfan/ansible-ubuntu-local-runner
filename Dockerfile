@@ -18,8 +18,6 @@ RUN apt-get update && \
     mkdir -p  /etc/ansible/roles/role_to_test && \
     echo "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts
 
-COPY entrypoint.sh /usr/local/bin
+COPY cli.sh /usr/local/bin/cli
 
 WORKDIR /etc/ansible/roles/role_to_test
-
-ENTRYPOINT ["entrypoint.sh"]
