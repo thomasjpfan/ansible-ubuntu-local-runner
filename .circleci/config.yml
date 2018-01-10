@@ -18,7 +18,7 @@ jobs:
           command: |
             docker run --rm -v $PWD:/etc/ansible/roles/role_to_test \
               -v $PWD/dep_roles:/root/.ansible/roles \
-              thomasjpfan/ansible-ubuntu-local-runner all
+              thomasjpfan/ansible-ubuntu-local-runner:$CIRCLE_BRANCH all
       - deploy:
           name: Push to Docker Hub
           command: |

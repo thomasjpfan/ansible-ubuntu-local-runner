@@ -1,5 +1,7 @@
 # Ubuntu Ansible Systemd
 
+[![CircleCI](https://circleci.com/gh/thomasjpfan/ansible-ubuntu-local-runner/tree/master.svg?style=svg)](https://circleci.com/gh/thomasjpfan/ansible-ubuntu-local-runner/tree/master)
+
 These images builds ontop of [thomasjpfan/ubuntu-python-systemd](https://github.com/thomasjpfan/ubuntu-python-systemd) to test Ansible Roles that needs systemd.
 
 ## Usage
