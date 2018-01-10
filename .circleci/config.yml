@@ -16,9 +16,9 @@ jobs:
       - run:
           name: Run test
           command: |
-            docker run --rm -v $PWD:/etc/ansible/roles/role_to_test \
-              -v $PWD/dep_roles:/root/.ansible/roles \
-              $DOCKER_HUB_REPO:$CIRCLE_BRANCH all
+            docker create -v /etc/ansible/roles/role_to_test --name repo alpine:3.7 /bin/true
+            docker cp . repo:/etc/ansible/roles/role_to_test
+            docker run --rm --volumes-from repo $DOCKER_HUB_REPO:$CIRCLE_BRANCH all
       - deploy:
           name: Push to Docker Hub
           command: |
