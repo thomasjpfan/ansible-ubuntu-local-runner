@@ -9,7 +9,9 @@ These images builds ontop of [thomasjpfan/ubuntu-python-systemd](https://github.
 This [repo](https://github.com/thomasjpfan/ansible-ubuntu-local-runner) provides a sample role to be tested. Test can be ran with:
 
 ```bash
-docker run --rm -v $PWD:/etc/ansible/roles/role_to_test \
+docker run --rm --privileged \
+  -v $PWD:/etc/ansible/roles/role_to_test \
+  -v /sys/fs/cgroup:/sys/fs/cgroup:ro -t \
   -v $PWD/dep_roles:/root/.ansible/roles \
   thomasjpfan/ansible-ubuntu-local-runner all
 ```
@@ -29,7 +31,9 @@ docker run --rm -v $PWD:/etc/ansible/roles/role_to_test \
 For local development, one can start a shell:
 
 ```bash
-docker run --rm -v $PWD:/etc/ansible/roles/role_to_test \
+docker run --rm --privileged \
+  -v $PWD:/etc/ansible/roles/role_to_test \
+  -v /sys/fs/cgroup:/sys/fs/cgroup:ro -t \
   -v $PWD/dep_roles:/root/.ansible/roles -ti \
   thomasjpfan/ansible-ubuntu-local-runner /bin/sh
 ```
