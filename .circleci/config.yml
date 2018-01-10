@@ -1,0 +1,36 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: docker:17.12.0-ce-git
+    environment:
+      - DOCKER_HUB_REPO: "thomasjpfan/ansible-docker-runner"
+    steps:
+      - checkout
+      - setup_remote_docker:
+        version: 17.11.0-ce
+      - run:
+        name: Build image
+        command: |
+          docker image build -t $DOCKER_HUB_REPO:$CIRCLE_BRANCH .
+      - run:
+        name: Run test
+        command: |
+          docker run --rm -v $PWD:/etc/ansible/roles/role_to_test \
+            -v $PWD/dep_roles:/root/.ansible/roles \
+            thomasjpfan/ansible-ubuntu-local-runner all
+      - deploy:
+        name: Push to Docker Hub
+        command: |
+          if [ "${CIRCLE_BRANCH}" == "master" ]; then
+            docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+            ansible_v=$(grep "ENV ANSIBLE_VERSION" Dockerfile | awk '{{ print $3 }}')
+            lint_v=$(grep "ENV ANSIBLE_LINT_VERSION" Dockerfile | awk '{{ print $3 }}')
+            testinfra_v=$(grep "ENV TESTINFRA_VERSION" Dockerfile | awk '{{ print $3 }}')
+            tag="docker-${docker_v}-ansible-${ansible_v}-lint-${lint_v}-testinfra-${testinfra_v}"
+
+            docker tag $DOCKER_HUB_REPO:$CIRCLE_BRANCH $DOCKER_HUB_REPO:$tag
+            docker tag $DOCKER_HUB_REPO:$CIRCLE_BRANCH $DOCKER_HUB_REPO:latest
+            docker push $DOCKER_HUB_REPO:$tag
+            docker push $DOCKER_HUB_REPO:latest
+          fi
