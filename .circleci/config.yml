@@ -4,7 +4,7 @@ jobs:
     docker:
       - image: docker:17.12.0-ce-git
     environment:
-      - DOCKER_HUB_REPO: "thomasjpfan/ansible-docker-runner"
+      - DOCKER_HUB_REPO: " thomasjpfan/ansible-ubuntu-local-runner"
     steps:
       - checkout
       - setup_remote_docker:
@@ -18,7 +18,7 @@ jobs:
           command: |
             docker run --rm -v $PWD:/etc/ansible/roles/role_to_test \
               -v $PWD/dep_roles:/root/.ansible/roles \
-              thomasjpfan/ansible-ubuntu-local-runner:$CIRCLE_BRANCH all
+              $DOCKER_HUB_REPO:$CIRCLE_BRANCH all
       - deploy:
           name: Push to Docker Hub
           command: |
