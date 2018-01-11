@@ -30,7 +30,7 @@ converge() {
 
 run_test() {
 	printf "${green}Running tests${neutral}\\n"
-	pytest tests
+	pytest "${root_test_dir}"
 }
 
 idempotence() {
