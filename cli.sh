@@ -11,7 +11,6 @@ neutral='\033[0m'
 root_test_dir="/etc/ansible/roles/role_to_test/tests"
 playbook="${root_test_dir}/playbook.yml"
 requirements="${root_test_dir}/requirements.yml"
-run_tests="${root_test_dir}/run_tests.sh"
 
 lint() {
 	printf "${green}Using ansible-lint to check syntax${neutral}\\n"
@@ -30,7 +29,7 @@ converge() {
 
 run_test() {
 	printf "${green}Running tests${neutral}\\n"
-	pytest "${root_test_dir}"
+	pytest tests
 }
 
 idempotence() {

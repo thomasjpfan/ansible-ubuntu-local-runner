@@ -19,3 +19,5 @@ RUN apt-get update && \
     echo "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts
 
 COPY cli.sh /usr/local/bin/cli
+
+WORKDIR /etc/ansible/roles/role_to_test
