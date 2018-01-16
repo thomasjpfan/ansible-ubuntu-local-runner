@@ -19,12 +19,12 @@ lint() {
 
 syntax_check() {
 	printf "${green}Checking ansible playbook syntax-check${neutral}\\n"
-	ansible-playbook "$playbook" --syntax-check
+	ansible-playbook "$playbook" --syntax-check "$@"
 }
 
 converge() {
 	printf "${green}Running full playbook${neutral}\\n"
-	ansible-playbook "$playbook"
+	ansible-playbook "$playbook" "$@"
 }
 
 run_test() {
@@ -35,7 +35,7 @@ run_test() {
 idempotence() {
 	printf "${green}Running playbook again (idempotence test)${neutral}\\n"
 	idempotence="$(mktemp)"
-	ansible-playbook "$playbook" | tee -a "$idempotence"
+	ansible-playbook "$playbook" "$@" | tee -a "$idempotence"
 	tail "$idempotence" \
 		| grep -q 'changed=0.*failed=0' \
 		&& (printf "${green}Idempotence test: pass${neutral}\\n") \
@@ -62,30 +62,34 @@ usage() {
 	exit 1
 }
 
-case "$1" in
+cmd="$1"
+shift 1
+args="$*"
+
+case "$cmd" in
 	all)
 		lint
-		syntax_check
+		syntax_check "$args"
 		requirements
-		converge
-		idempotence
+		converge "$args"
+		idempotence "$args"
 		run_test
 		;;
 	lint)
 		lint
 		;;
 	syntax-check)
-		syntax_check
+		syntax_check "$args"
 		;;
 	requirements)
 		requirements
 		;;
 	converge)
-		converge
+		converge "$args"
 		;;
 	idempotence)
-		converge
-		idempotence
+		converge "$args"
+		idempotence "$args"
 		;;
 	run_test)
 		run_test
