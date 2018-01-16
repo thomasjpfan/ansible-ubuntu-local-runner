@@ -33,3 +33,9 @@ All the commands are prefixed with `cli`.
 1. `run_test`: Runs test `tests/run_tests.sh`.
 1. `requirements`: Runs ansible-galaxy install on `tests/requirements.yml`.
 1. `all`: Runs `lint`, `syntax_check`, `requirements`, `converge`, `idempotence`.
+
+
+## Extra Features
+
+- Setting `ANSIBLE_PLAYBOOK_ARGS` in the env will be passed along to the `ansible-playbook` cli.
+- Any arguments after the command will be passed along to the `ansible-playbook` cli and overwrites `ANSIBLE_PLAYBOOK_ARGS`

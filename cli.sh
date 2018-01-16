@@ -19,10 +19,11 @@ lint() {
 
 syntax_check() {
 	printf "${green}Checking ansible playbook syntax-check${neutral}\\n"
+	echo "$@"
 	if [ ! -z "$@" ]; then
-		ansible-playbook "$@" "$playbook" --syntax-check
+		echo ansible-playbook "$@" "$playbook" --syntax-check
 	else
-		ansible-playbook "$playbook" --syntax-check
+		echo ansible-playbook "$playbook" --syntax-check
 	fi
 }
 
@@ -77,10 +78,11 @@ usage() {
 }
 
 cmd="$1"
-if [ ! "$#" -eq 0 ]; then
+args=${ANSIBLE_PLAYBOOK_ARGS:=}
+if [ "$#" -gt 1 ]; then
 	shift 1
+	args="$*"
 fi
-args="$*"
 
 case "$cmd" in
 	all)
