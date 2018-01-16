@@ -1,4 +1,4 @@
-FROM thomasjpfan/ubuntu-python-systemd:16.04
+FROM thomasjpfan/ubuntu-python-systemd:16.04-py3
 
 ENV ANSIBLE_VERSION 2.4.2.0
 ENV TESTINFRA_VERSION 1.10.1
@@ -6,12 +6,12 @@ ENV ANSIBLE_LINT_VERSION 3.4.20
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    python-setuptools python-pip && \
-    pip install -U pip wheel && \
-    pip install -U ansible==${ANSIBLE_VERSION} \
+    python3-setuptools python3-pip && \
+    pip3 install -U pip wheel && \
+    pip3 install -U ansible==${ANSIBLE_VERSION} \
     testinfra==${TESTINFRA_VERSION} \
     ansible-lint==${ANSIBLE_LINT_VERSION} && \
-    apt-get remove -y --auto-remove python-setuptools python-pip && \
+    apt-get remove -y --auto-remove python3-setuptools python3-pip && \
     rm -Rf /var/lib/apt/lists/* && \
     rm -Rf /usr/share/doc && rm -Rf /usr/share/man && \
     apt-get clean && \

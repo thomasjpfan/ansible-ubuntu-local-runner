@@ -1,44 +1,63 @@
+build_and_push: &build_and_push
+  - steps:
+    - checkout
+    - setup_remote_docker:
+        version: 17.11.0-ce
+    - run:
+        name: Build Image
+        command: |
+          docker image build -t $DOCKER_REPO:$CIRCLE_BRANCH -f python$PY_VERSION/Dockerfile .
+    - run:
+        name: Run Container
+        command: |
+          docker create -v /etc/ansible/roles/role_to_test --name repo alpine:3.7 /bin/true
+          docker cp . repo:/etc/ansible/roles/role_to_test
+          docker run --rm --volumes-from repo -d --name ctest $DOCKER_REPO:$CIRCLE_BRANCH
+    - run:
+        name: Run test
+        command: docker exec -ti ctest cli all
+    - run:
+        name: Clean up
+        command: docker stop ctest
+    - run:
+        name: Push to Docker Hub
+          if [ "${CIRCLE_BRANCH}" == "master" ]; then
+            docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+            docker_file=python$PY_VERSION/Dockerfile
+            ansible_v=$(grep "ENV ANSIBLE_VERSION" $docker_file | awk '{{ print $3 }}')
+            lint_v=$(grep "ENV ANSIBLE_LINT_VERSION" $docker_file | awk '{{ print $3 }}')
+            testinfra_v=$(grep "ENV TESTINFRA_VERSION" $docker_file | awk '{{ print $3 }}')
+            ubuntu_v=$(grep "FROM thomasjpfan/ubuntu-python-systemd" $docker_file | cut -d ":" -f2)
+            tag="${ubuntu_v}-ansible-${ansible_v}-lint-${lint_v}-testinfra-${testinfra_v}"
+
+            docker tag $DOCKER_REPO:$CIRCLE_BRANCH $DOCKER_REPO:$tag
+            docker tag $DOCKER_REPO:$CIRCLE_BRANCH $DOCKER_REPO:latest
+            docker push $DOCKER_REPO:$tag
+            docker push $DOCKER_REPO:latest
+          fi
+
 version: 2
 jobs:
-  build:
+  py2:
     docker:
       - image: docker:17.12.0-ce-git
     environment:
-      - DOCKER_HUB_REPO: " thomasjpfan/ansible-ubuntu-local-runner"
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 17.11.0-ce
-      - run:
-          name: Build image
-          command: |
-            docker image build -t $DOCKER_HUB_REPO:$CIRCLE_BRANCH .
-      - run:
-          name: Run container
-          command: |
-            docker create -v /etc/ansible/roles/role_to_test --name repo alpine:3.7 /bin/true
-            docker cp . repo:/etc/ansible/roles/role_to_test
-            docker run --rm --volumes-from repo -d --name ctest $DOCKER_HUB_REPO:$CIRCLE_BRANCH
-      - run:
-          name: Run test
-          command: docker exec -ti ctest cli all
-      - run:
-          name: Clean up
-          command: docker stop ctest
-          when: always
-      - deploy:
-          name: Push to Docker Hub
-          command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
-              ansible_v=$(grep "ENV ANSIBLE_VERSION" Dockerfile | awk '{{ print $3 }}')
-              lint_v=$(grep "ENV ANSIBLE_LINT_VERSION" Dockerfile | awk '{{ print $3 }}')
-              testinfra_v=$(grep "ENV TESTINFRA_VERSION" Dockerfile | awk '{{ print $3 }}')
-              ubuntu_v=$(grep "FROM thomasjpfan/ubuntu-python-systemd" Dockerfile | cut -d ":" -f2)
-              tag="${ubuntu_v}-ansible-${ansible_v}-lint-${lint_v}-testinfra-${testinfra_v}"
+      - DOCKER_REPO: "thomasjpfan/ansible-ubuntu-local-runner"
+      - PY_VERSION: 2
+    <<: *build_and_push
+  py3:
+    docker:
+      - image: docker:17.12.0-ce-git
+    environment:
+      - DOCKER_REPO: "thomasjpfan/ansible-ubuntu-local-runner"
+      - PY_VERSION: 3
+    <<: *build_and_push
 
-              docker tag $DOCKER_HUB_REPO:$CIRCLE_BRANCH $DOCKER_HUB_REPO:$tag
-              docker tag $DOCKER_HUB_REPO:$CIRCLE_BRANCH $DOCKER_HUB_REPO:latest
-              docker push $DOCKER_HUB_REPO:$tag
-              docker push $DOCKER_HUB_REPO:latest
-            fi
+
+workflows:
+  version: 2
+  build-both:
+    jobs:
+      - py2
+      - py3
+

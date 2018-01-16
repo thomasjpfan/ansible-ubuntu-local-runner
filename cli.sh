@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-# commands: all lint syntax-check run_test converge requirements idempotence all
+# commands: all lint syntax-check run_test converge requirements idempotence
 
 # Colors!
 red='\033[0;31m'
@@ -50,6 +50,18 @@ requirements() {
 
 }
 
+usage() {
+	echo "usage: $0 (lint|syntax-check|requirments|converge|idempotence|run_test|all)"
+	echo "  lint: Runs ansible-lint on tests/playbook.yml"
+	echo "  syntax-check: Runs ansible-playbook --syntax-check on tests/playbook.yml"
+	echo "  requirements: Imports requirements from ansible galaxy"
+	echo "  converge: Runs tests/playbook.yml"
+	echo "  idempotence: Runs ansible-playbook again and fails if anything changes"
+	echo "  run_test: Runs pytest on tests folder"
+	echo "  all: Runs all of the above"
+	exit 1
+}
+
 case "$1" in
 	all)
 		lint
@@ -79,6 +91,6 @@ case "$1" in
 		run_test
 		;;
 	*)
-		exec "$@"
+		usage
 		;;
 esac
