@@ -19,7 +19,7 @@ lint() {
 
 syntax_check() {
 	printf "${green}Checking ansible playbook syntax-check${neutral}\\n"
-	if [ "$#" -gt 1 ]; then
+	if [ ! -z "$@" ]; then
 		ansible-playbook "$@" "$playbook" --syntax-check
 	else
 		ansible-playbook "$playbook" --syntax-check
@@ -28,8 +28,7 @@ syntax_check() {
 
 converge() {
 	printf "${green}Running full playbook${neutral}\\n"
-	ansible-playbook "$playbook"
-	if [ "$#" -gt 1 ]; then
+	if [ ! -z "$@" ]; then
 		ansible-playbook "$@" "$playbook"
 	else
 		ansible-playbook "$playbook"
@@ -45,7 +44,7 @@ idempotence() {
 	printf "${green}Running playbook again (idempotence test)${neutral}\\n"
 	idempotence="$(mktemp)"
 
-	if [ "$#" -gt 1 ]; then
+	if [ ! -z "$@" ]; then
 		cmd="ansible-playbook ${@} ${playbook}"
 	else
 		cmd="ansible-playbook ${playbook}"
