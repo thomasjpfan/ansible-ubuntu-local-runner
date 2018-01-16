@@ -16,7 +16,7 @@ RUN apt-get update && \
     rm -Rf /usr/share/doc && rm -Rf /usr/share/man && \
     apt-get clean && \
     mkdir -p  /etc/ansible/roles/role_to_test && \
-    echo "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts
+    echo "[local]\nlocalhost ansible_connection=local\n[local:vars]\nansible_python_interpreter=/usr/bin/python3" > /etc/ansible/hosts
 
 COPY cli.sh /usr/local/bin/cli
 
