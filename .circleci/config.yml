@@ -32,9 +32,7 @@ build_and_push: &build_and_push
             tag="${ubuntu_v}-ansible-${ansible_v}-lint-${lint_v}-testinfra-${testinfra_v}"
 
             docker tag $DOCKER_REPO:$CIRCLE_BRANCH $DOCKER_REPO:$tag
-            docker tag $DOCKER_REPO:$CIRCLE_BRANCH $DOCKER_REPO:latest
             docker push $DOCKER_REPO:$tag
-            docker push $DOCKER_REPO:latest
           fi
 
 version: 2
