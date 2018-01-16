@@ -21,6 +21,7 @@ build_and_push: &build_and_push
         command: docker stop ctest
     - run:
         name: Push to Docker Hub
+        command: |
           if [ "${CIRCLE_BRANCH}" == "master" ]; then
             docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
             docker_file=python$PY_VERSION/Dockerfile
