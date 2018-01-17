@@ -14,26 +14,30 @@ requirements="${root_test_dir}/requirements.yml"
 
 lint() {
 	printf "${green}Using ansible-lint to check syntax${neutral}\\n"
+	echo ansible-lint "$playbook"
 	ansible-lint "$playbook"
 }
 
 syntax_check() {
 	printf "${green}Checking ansible playbook syntax-check${neutral}\\n"
-	echo "$@"
 	if [ ! -z "$@" ]; then
-		echo ansible-playbook "$@" "$playbook" --syntax-check
+		cmd="ansible-playbook $* ${playbook} --syntax-check"
 	else
-		echo ansible-playbook "$playbook" --syntax-check
+		cmd="ansible-playbook ${playbook} --syntax-check"
 	fi
+	echo "$cmd"
+	$cmd
 }
 
 converge() {
 	printf "${green}Running full playbook${neutral}\\n"
 	if [ ! -z "$@" ]; then
-		ansible-playbook "$@" "$playbook"
+		cmd="ansible-playbook $* ${playbook}"
 	else
-		ansible-playbook "$playbook"
+		cmd="ansible-playbook ${playbook}"
 	fi
+	echo "$cmd"
+	$cmd
 }
 
 run_test() {
@@ -46,7 +50,7 @@ idempotence() {
 	idempotence="$(mktemp)"
 
 	if [ ! -z "$@" ]; then
-		cmd="ansible-playbook ${@} ${playbook}"
+		cmd="ansible-playbook $* ${playbook}"
 	else
 		cmd="ansible-playbook ${playbook}"
 	fi
