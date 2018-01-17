@@ -18,7 +18,7 @@ lint() {
 	ansible-lint "$playbook"
 }
 
-syntax_check() {
+run_syntax_check() {
 	printf "${green}Checking ansible playbook syntax-check${neutral}\\n"
 	if [ ! -z "$@" ]; then
 		cmd="ansible-playbook $* ${playbook} --syntax-check"
@@ -72,7 +72,7 @@ requirements() {
 usage() {
 	echo "usage: $0 (lint|syntax-check|requirments|converge|idempotence|run_test|all)"
 	echo "  lint: Runs ansible-lint on tests/playbook.yml"
-	echo "  syntax-check: Runs ansible-playbook --syntax-check on tests/playbook.yml"
+	echo "  syntax_check: Runs ansible-playbook --syntax-check on tests/playbook.yml"
 	echo "  requirements: Imports requirements from ansible galaxy"
 	echo "  converge: Runs tests/playbook.yml"
 	echo "  idempotence: Runs ansible-playbook again and fails if anything changes"
@@ -91,7 +91,7 @@ fi
 case "$cmd" in
 	all)
 		lint
-		syntax_check "$args"
+		run_syntax_check "$args"
 		requirements
 		converge "$args"
 		idempotence "$args"
@@ -100,8 +100,8 @@ case "$cmd" in
 	lint)
 		lint
 		;;
-	syntax-check)
-		syntax_check "$args"
+	syntax_check)
+		run_syntax_check "$args"
 		;;
 	requirements)
 		requirements
