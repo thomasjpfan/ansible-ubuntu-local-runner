@@ -33,6 +33,10 @@ build_and_push: &build_and_push
 
             docker tag $DOCKER_REPO:$CIRCLE_BRANCH $DOCKER_REPO:$tag
             docker push $DOCKER_REPO:$tag
+            if [ "$PY_VERSION" == "3" ]; then
+              docker tag $DOCKER_REPO:$CIRCLE_BRANCH $DOCKER_REPO:latest
+              docker push $DOCKER_REPO:latest
+            fi
           fi
 
 version: 2
