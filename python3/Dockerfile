@@ -10,7 +10,8 @@ RUN apt-get update && \
     pip3 install -U pip wheel && \
     pip3 install -U ansible==${ANSIBLE_VERSION} \
     testinfra==${TESTINFRA_VERSION} \
-    ansible-lint==${ANSIBLE_LINT_VERSION} && \
+    ansible-lint==${ANSIBLE_LINT_VERSION} \
+    pyOpenSSL && \
     apt-get remove -y --auto-remove python3-setuptools python3-pip && \
     rm -Rf /var/lib/apt/lists/* && \
     rm -Rf /usr/share/doc && rm -Rf /usr/share/man && \
