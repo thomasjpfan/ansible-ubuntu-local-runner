@@ -8,9 +8,12 @@ red='\033[0;31m'
 green='\033[0;32m'
 neutral='\033[0m'
 
-root_test_dir="/etc/ansible/roles/role_to_test/tests"
-playbook="${root_test_dir}/playbook.yml"
-requirements="${root_test_dir}/requirements.yml"
+PLAYBOOK_PATH=${PLAYBOOK_PATH:-"tests/playbook.yml"}
+REQUIREMENTS_PATH=${REQUIREMENTS_PATH:-"requirements.yml"}
+
+root_role_dir="/etc/ansible/roles/role_to_test"
+playbook="${root_role_dir}/${PLAYBOOK_PATH}"
+requirements="${root_role_dir}/${REQUIREMENTS_PATH}"
 
 lint() {
 	printf "${green}Using ansible-lint to check syntax${neutral}\\n"

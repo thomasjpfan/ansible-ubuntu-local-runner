@@ -39,3 +39,5 @@ All the commands are prefixed with `cli`.
 
 - Setting `ANSIBLE_PLAYBOOK_ARGS` in the env will be passed along to the `ansible-playbook` cli.
 - Any arguments after the command will be passed along to the `ansible-playbook` cli and overwrites `ANSIBLE_PLAYBOOK_ARGS`
+- Setting `PLAYBOOK_PATH` changes the default playbook path: `tests/playbook.yml`.
+- Setting `REQUIREMENTS_PATH` changes the default requirements path: `requirements.yml`.
