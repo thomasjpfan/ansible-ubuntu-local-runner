@@ -12,7 +12,6 @@ This [repo](https://github.com/thomasjpfan/ansible-ubuntu-local-runner) provides
 docker run --rm --privileged -d --name systemd \
   -v $PWD:/etc/ansible/roles/role_to_test \
   -v /sys/fs/cgroup:/sys/fs/cgroup:ro  \
-  -v $PWD/dep_roles:/root/.ansible/roles -t \
   thomasjpfan/ansible-ubuntu-local-runner
 ```
 
