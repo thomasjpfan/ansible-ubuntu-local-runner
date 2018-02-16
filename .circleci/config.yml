@@ -27,7 +27,7 @@ build_and_push: &build_and_push
             docker_file=python$PY_VERSION/Dockerfile
             version=$(grep "LABEL version" $docker_file | cut -d "=" -f2 | tr -d '"')
             ubuntu_v=$(grep "FROM thomasjpfan/ubuntu-python-systemd" $docker_file | cut -d ":" -f2)
-            tag="${version}-${ubuntu_v}-py${PY_VERSION}"
+            tag="${version}-${ubuntu_v}"
 
             docker tag $DOCKER_REPO:$CIRCLE_BRANCH $DOCKER_REPO:$tag
             docker push $DOCKER_REPO:$tag
