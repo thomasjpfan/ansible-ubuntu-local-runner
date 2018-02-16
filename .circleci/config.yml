@@ -25,11 +25,9 @@ build_and_push: &build_and_push
           if [ "${CIRCLE_BRANCH}" == "master" ] && [ ! -z "$CIRCLE_PULL_REQUEST" ]; then
             docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
             docker_file=python$PY_VERSION/Dockerfile
-            ansible_v=$(grep "ENV ANSIBLE_VERSION" $docker_file | awk '{{ print $3 }}')
-            lint_v=$(grep "ENV ANSIBLE_LINT_VERSION" $docker_file | awk '{{ print $3 }}')
-            testinfra_v=$(grep "ENV TESTINFRA_VERSION" $docker_file | awk '{{ print $3 }}')
+            version=$(grep "LABEL version" $docker_file | cut -d "=" -f2 | tr -d '"')
             ubuntu_v=$(grep "FROM thomasjpfan/ubuntu-python-systemd" $docker_file | cut -d ":" -f2)
-            tag="${ubuntu_v}-ansible-${ansible_v}-lint-${lint_v}-testinfra-${testinfra_v}"
+            tag="${version}-${ubuntu_v}-py${PY_VERSION}"
 
             docker tag $DOCKER_REPO:$CIRCLE_BRANCH $DOCKER_REPO:$tag
             docker push $DOCKER_REPO:$tag

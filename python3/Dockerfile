@@ -1,5 +1,7 @@
 FROM thomasjpfan/ubuntu-python-systemd:16.04-py3
 
+LABEL version="1.0.0"
+
 ENV ANSIBLE_VERSION 2.4.2.0
 ENV TESTINFRA_VERSION 1.10.1
 ENV ANSIBLE_LINT_VERSION 3.4.20
