@@ -77,7 +77,7 @@ workflows:
   build-both:
     jobs:
       - py2-16.04
-      - py2-18.04
+      # - py2-18.04
       - py3-16.04
-      - py3-18.04
+      # - py3-18.04
 
