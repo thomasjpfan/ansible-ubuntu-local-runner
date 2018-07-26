@@ -8,12 +8,13 @@ ENV ANSIBLE_LINT_VERSION 3.4.23
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    python3-setuptools python3-pip gcc && \
+    python3-setuptools python3-pip build-essential libssl-dev libffi-dev  && \
+    pip3 install -U wheel && \
     pip3 install -U ansible==${ANSIBLE_VERSION} \
     testinfra==${TESTINFRA_VERSION} \
     ansible-lint==${ANSIBLE_LINT_VERSION} \
     pyOpenSSL && \
-    apt-get remove -y --auto-remove python3-setuptools python3-pip gcc && \
+    apt-get remove -y --auto-remove python3-setuptools python3-pip build-essential libssl-dev libffi-dev && \
     rm -Rf /var/lib/apt/lists/* && \
     rm -Rf /usr/share/doc && rm -Rf /usr/share/man && \
     apt-get clean && \
