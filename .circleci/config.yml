@@ -26,7 +26,7 @@ build_and_push: &build_and_push
             docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
             docker_file=python$PY_VERSION/Dockerfile.$UBUNTU_VERSION
             version=$(grep "LABEL version" $docker_file | cut -d "=" -f2 | tr -d '"')
-            tag="${version}-${UBUNTU_VERSION}"
+            tag="${version}-${UBUNTU_VERSION}-py${PY_VERSION}"
 
             docker tag "$DOCKER_REPO:${CIRCLE_BRANCH}_${UBUNTU_VERSION}_${PY_VERSION}" $DOCKER_REPO:$tag
             docker push $DOCKER_REPO:$tag
