@@ -6,7 +6,7 @@ build_and_push: &build_and_push
     - run:
         name: Build Image
         command: |
-          docker image build -t $DOCKER_REPO:$CIRCLE_BRANCH -f python$PY_VERSION/Dockerfile .
+          docker image build -t $DOCKER_REPO:$CIRCLE_BRANCH -f python$PY_VERSION/Dockerfile.$UBUNTU_VERSION .
     - run:
         name: Run Container
         command: |
@@ -24,10 +24,9 @@ build_and_push: &build_and_push
         command: |
           if [ "${CIRCLE_BRANCH}" == "master" ] && [ -z "$CIRCLE_PULL_REQUEST" ]; then
             docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
-            docker_file=python$PY_VERSION/Dockerfile
+            docker_file=python$PY_VERSION/Dockerfile.$UBUNTU_VERSION
             version=$(grep "LABEL version" $docker_file | cut -d "=" -f2 | tr -d '"')
-            ubuntu_v=$(grep "FROM thomasjpfan/ubuntu-python-systemd" $docker_file | cut -d ":" -f2)
-            tag="${version}-${ubuntu_v}"
+            tag="${version}-${UBUNTU_VERSION}"
 
             docker tag $DOCKER_REPO:$CIRCLE_BRANCH $DOCKER_REPO:$tag
             docker push $DOCKER_REPO:$tag
@@ -39,19 +38,37 @@ build_and_push: &build_and_push
 
 version: 2
 jobs:
-  py2:
+  py2-16.04:
     docker:
-      - image: docker:17.12.0-ce-git
+      - image: docker:18.06.0-ce-git
     environment:
-      - DOCKER_REPO: "thomasjpfan/ansible-ubuntu-local-runner"
+      - DOCKER_REPO: thomasjpfan/ansible-ubuntu-local-runner
       - PY_VERSION: 2
+      - UBUNTU_VERSION: 16.04
     <<: *build_and_push
-  py3:
+  py2-18.04:
     docker:
-      - image: docker:17.12.0-ce-git
+      - image: docker:18.06.0-ce-git
     environment:
-      - DOCKER_REPO: "thomasjpfan/ansible-ubuntu-local-runner"
+      - DOCKER_REPO: thomasjpfan/ansible-ubuntu-local-runner
+      - PY_VERSION: 2
+      - UBUNTU_VERSION: 18.04
+    <<: *build_and_push
+  py3-16.04:
+    docker:
+      - image: docker:18.06.0-ce-git
+    environment:
+      - DOCKER_REPO: thomasjpfan/ansible-ubuntu-local-runner
       - PY_VERSION: 3
+      - UBUNTU_VERSION: 16.04
+    <<: *build_and_push
+  py3-18.04:
+    docker:
+      - image: docker:18.06.0-ce-git
+    environment:
+      - DOCKER_REPO: thomasjpfan/ansible-ubuntu-local-runner
+      - PY_VERSION: 3
+      - UBUNTU_VERSION: 18.04
     <<: *build_and_push
 
 
@@ -59,6 +76,6 @@ workflows:
   version: 2
   build-both:
     jobs:
-      - py2
-      - py3
+      - py2-16.04
+      - py3-16.04
 
