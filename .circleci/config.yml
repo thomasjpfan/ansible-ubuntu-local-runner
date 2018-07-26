@@ -13,9 +13,7 @@ build_and_push: &build_and_push
           docker create -v /etc/ansible/roles/role_to_test --name repo alpine:3.7 /bin/true
           docker cp . repo:/etc/ansible/roles/role_to_test
           docker run --rm --volumes-from repo -d --name "ctest_${UBUNTU_VERSION}_${PY_VERSION}" $DOCKER_REPO:$CIRCLE_BRANCH
-    - run:
-        name: Run test
-        command: docker exec -ti "ctest_${UBUNTU_VERSION}_${PY_VERSION}" cli all
+          docker exec -ti "ctest_${UBUNTU_VERSION}_${PY_VERSION}" cli all
     - run:
         name: Clean up
         command: docker stop "ctest_${UBUNTU_VERSION}_${PY_VERSION}"
