@@ -9,6 +9,7 @@ ENV ANSIBLE_LINT_VERSION 3.4.23
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     python-setuptools python-pip && \
+    pip install -U wheel
     pip install -U ansible==${ANSIBLE_VERSION} \
     testinfra==${TESTINFRA_VERSION} \
     ansible-lint==${ANSIBLE_LINT_VERSION} \
