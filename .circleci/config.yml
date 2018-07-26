@@ -6,14 +6,16 @@ build_and_push: &build_and_push
     - run:
         name: Build Image
         command: |
-          docker image build -t $DOCKER_REPO:$CIRCLE_BRANCH -f python$PY_VERSION/Dockerfile.$UBUNTU_VERSION .
+          docker image build -t "$DOCKER_REPO:${CIRCLE_BRANCH}_${UBUNTU_VERSION}_${PY_VERSION}" -f python$PY_VERSION/Dockerfile.$UBUNTU_VERSION .
     - run:
         name: Run Container
         command: |
           docker create -v /etc/ansible/roles/role_to_test --name repo alpine:3.7 /bin/true
           docker cp . repo:/etc/ansible/roles/role_to_test
-          docker run --rm --volumes-from repo -d --name "ctest_${UBUNTU_VERSION}_${PY_VERSION}" $DOCKER_REPO:$CIRCLE_BRANCH
-          docker exec -ti "ctest_${UBUNTU_VERSION}_${PY_VERSION}" cli all
+          docker run --rm --volumes-from repo -d --name "ctest_${UBUNTU_VERSION}_${PY_VERSION}" "$DOCKER_REPO:${CIRCLE_BRANCH}_${UBUNTU_VERSION}_${PY_VERSION}"
+    - run:
+        name: Run test
+        command: docker exec -ti "ctest_${UBUNTU_VERSION}_${PY_VERSION}" cli all
     - run:
         name: Clean up
         command: docker stop "ctest_${UBUNTU_VERSION}_${PY_VERSION}"
@@ -26,10 +28,10 @@ build_and_push: &build_and_push
             version=$(grep "LABEL version" $docker_file | cut -d "=" -f2 | tr -d '"')
             tag="${version}-${UBUNTU_VERSION}"
 
-            docker tag $DOCKER_REPO:$CIRCLE_BRANCH $DOCKER_REPO:$tag
+            docker tag "$DOCKER_REPO:${CIRCLE_BRANCH}_${UBUNTU_VERSION}_${PY_VERSION}" $DOCKER_REPO:$tag
             docker push $DOCKER_REPO:$tag
             if [ "$PY_VERSION" == "3" ] && [ "$UBUNTU_VERSION" == "18.04" ]; then
-              docker tag $DOCKER_REPO:$CIRCLE_BRANCH $DOCKER_REPO:latest
+              docker tag "$DOCKER_REPO:${CIRCLE_BRANCH}_${UBUNTU_VERSION}_${PY_VERSION}" $DOCKER_REPO:latest
               docker push $DOCKER_REPO:latest
             fi
           fi
